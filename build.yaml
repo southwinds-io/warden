@@ -1,0 +1,36 @@
+---
+labels:
+  author: SouthWinds Tech Ltd
+  application: Warden HTTP Proxy
+  description: An http traffic proxy providing traffic proxying and inspection.
+
+env:
+  CGO_ENABLED: 0
+  REPO_NAME: registry.gitlab.com/southwinds-pub/image
+  APP_VERSION: 1.0.0
+  BUILD_VERSION: ${APP_VERSION}-${ARTISAN_REF}
+  APP_NAME: warden
+
+functions:
+  - name: build
+    description: build the proxy
+    run:
+      - go build -ldflags="-X 'southwinds.dev/warden/lib.Version=${BUILD_VERSION} (community)'" -o bin/${GOOS}/${GOARCH}/${APP_NAME} -v
+
+
+  - name: build-mac
+    description: build for MacOSX
+    env:
+      GOOS: darwin
+      GOARCH: amd64
+    run:
+      - $(build)
+
+  - name: build-linux
+    description: build for Linux
+    env:
+      GOOS: linux
+      GOARCH: amd64
+    run:
+      - $(build)
+...
